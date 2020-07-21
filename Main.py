@@ -1,13 +1,13 @@
 import pygame
 from functions import *;
 
+
 pygame.init()
 initial_pos = (10,360)
 window_H = 600
 window_W = 800
 pos_List = [initial_pos,(initial_pos[0]+35,initial_pos[1])]
 head = (initial_pos[0]+70,initial_pos[1])
-lenght = 3
 
 window = pygame.display.set_mode((window_W,window_H))
 pygame.display.set_caption("Snake")
@@ -84,16 +84,33 @@ while start_game:
                 else:
                     face = face_down
         if (head[0]+x,head[1]+y) in pos_List or head[0]+x>780 or head[1]+y>580 or head[0]+x<10 or head[1]+y<10:
-            while  True:
+            lost = True
+            while  lost:
+
                 pygame.draw.rect(window, (0, 100, 190), (head[0], head[1], 30, 30))
                 window.blit(face, (head[0], head[1]))
                 myfont = pygame.font.SysFont('Comic Sans MS', 30)
                 textsurface = myfont.render('you died! Your Score is : '+str(int((len(pos_List)-2)*(200-t))), False, (0, 0, 0))
+                restart     = myfont.render('Press space to restart ',False, (0, 0, 0))
                 window.blit(textsurface, (220,250))
+                window.blit(restart, (250, 450))
                 pygame.display.update()
                 print("you lost!")
-
-
+                for event in pygame.event.get():
+                    if event.type == \
+                            pygame.QUIT:
+                        start_game = False
+                        lost = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            lost = False
+                            pos_List = [initial_pos, (initial_pos[0] + 35, initial_pos[1])]
+                            head = (initial_pos[0] + 70, initial_pos[1])
+                            initaite_window(window)
+                            initiate_snake(window, face_right, initial_pos)
+                            pygame.display.update()
+                            food_spot = spawn_food(window, food)
+                            t=200
 
         pygame.time.wait(int(t))
         t -= 0.5
